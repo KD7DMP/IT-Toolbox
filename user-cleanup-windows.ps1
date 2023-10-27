@@ -15,23 +15,24 @@ foreach ($user in $userlist) {
         $userName = $userArray[2]
         $Dat = Get-Item "C:\Users\$userName\AppData\Local\IconCache.db" -Force
         $DatTime = $Dat.LastWriteTime
-        $age = (Get-Date).adddays(-365)
+        $age = (Get-Date).adddays(-375)
         if ($DatTime -lt $age){
             $old = "Old"
         }
+        Write-Host $old
         #Now we remove this user from the system We make sure to ask the user before deleting a user just to be sure.
         if ($user.loaded -eq $false -and $old -eq "Old"){
-                $answer = Read-Host $userName "Do you want to Delete this user? yes/no"
+                $answer = Read-Host $userName, $DatTime, "Do you want to Delete this user? yes/no"
                 
                 if ($answer -eq 'yes'){
-                    Get-WMIObject -class win32_userprofile | Where-Object {$_.localpath -eq $userArray} | Remove-WmiObject -WhatIf
+                    Get-WmiObject -class win32_userprofile | Where localpath -eq $user.localpath |Remove-WmiObject -Verbose
                     Write-Host "User Deleted"
                 }else{
-                    Write-Host $userName $DatTime, "No Action, User Skiped"
+                    Write-Host $userName, $DatTime, "No Action, User Skiped"
                 }           
         }
         Elseif($user.loaded -and $old -eq "Old"){
-            Write-Host $userName $DatTime, "This is old, just still loaded. Leave it alone"
+            Write-Host $userName, $DatTime, "This is old, just still loaded. Leave it alone"
         }
         else{
         Write-Host $userName, $DatTime, $old
