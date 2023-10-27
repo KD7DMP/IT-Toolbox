@@ -17,7 +17,7 @@ foreach ($user in $userlist) {
         if ($fileExists){
             $Dat = Get-Item "C:\Users\$userName\AppData\Local\IconCache.db" -Force
         }else{
-            $Dat = Get-Item "C:\Users\$userName\AppData\Local\Microsoft\Teams\" -Force
+            $Dat = Get-Item "C:\Users\$userName\AppData\Local\Microsoft\Windows\" -Force
         }
             $DatTime = $Dat.LastWriteTime
             $age = (Get-Date).adddays(-375)
@@ -27,7 +27,7 @@ foreach ($user in $userlist) {
             }
         
         #Now we remove this user from the system We make sure to ask the user before deleting a user just to be sure.
-        if ($user.loaded -eq $false -and $old){
+        if ($user.loaded -eq $false -and $old -eq $true){
                 $answer = Read-Host $userName, $DatTime, "Do you want to Delete this user? yes/no"
                 
                 if ($answer -eq 'yes'){
@@ -46,6 +46,7 @@ foreach ($user in $userlist) {
         Write-Host $userName, $DatTime, $old
         }
     }
+    $old = $false
 }
 
 
